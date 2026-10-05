@@ -12,40 +12,40 @@
 // 4. [DONE] Add scoring when the bird passes a pipe
 // 5. [DONE] Add game states — at minimum a playing state and a game over state
 //
-// Stretch: [DONE] add a start screen, a high score, or a difficulty curve.
+// Stretch: add a start screen [DONE], a high score, or a difficulty curve.
 
 /* ----------------- Globals ----------------- */
 let birdSprite; //bird image
 let bgImage; //bg image
 let pipeImage; //pipe image
 let bubbleSound; //bird movement sound
-let deathSound; //bird death
-let gameFont;
+let deathSound; //bird death sound
+let gameFont; //set font
 
 let bird;
 let pipes = [];
 let score = 0;
 let spawnCounter = 0;
-let bgX = 0; //bg top left corner
+let bgX = 0; //background image's top left corner
 
 const SPAWN_RATE = 90;
 const PIPE_SPEED = 2.5;
 const PIPE_GAP = 200;
 const PIPE_W = 60;
-const BG_SPEED = 1.5;
+const BG_SPEED = 1.5; // speed of backgroun image scroll
 
 // Game states: "homePage" or "playing" or "gameOver"
 let gameState = "homePage";
 
 /* ----------------- Setup & Draw ----------------- */
 async function setup() {
-  birdSprite = await loadImage("bird-sprite.png"); //load in bird sprite
-  bgImage = await loadImage("bg-image.jpg"); //load in bg image
-  pipeImage = await loadImage("pipe-image.jpeg"); //load in pipe image
-  bubbleSound = await loadSound("bubble-audio.mp3");
-  deathSound = await loadSound("death-audio.mp3");
+  birdSprite = await loadImage("assets/bird-sprite.png"); //load in bird sprite
+  bgImage = await loadImage("assets/bg-image.jpg"); //load in bg image
+  pipeImage = await loadImage("assets/pipe-image.jpeg"); //load in pipe image
+  bubbleSound = await loadSound("assets/bubble-audio.mp3"); //load in bird movement sound
+  deathSound = await loadSound("assets/death-audio.mp3"); // load in bird death sound
 
-  gameFont = await loadFont("upheavtt.ttf");
+  gameFont = await loadFont("assets/upheavtt.ttf"); //load in font
   
   createCanvas(480, 640);  
   noStroke();
@@ -55,6 +55,7 @@ async function setup() {
 
 function draw() {
 
+  // Start Screen
   if (gameState === "homePage") {
     image(bgImage,0,0,1440,640);
     background(0,0,0,130);
@@ -70,6 +71,7 @@ function draw() {
     text("> Press P to play <", width/2, height/2+200);
   }
   
+  // Gameplay
   if (gameState === "playing") {
     bgScroll();
     bird.update();
@@ -114,14 +116,14 @@ function draw() {
 
     // Display the score — look up textAlign() and textSize() in the p5.js reference
   }
-function scoreBoard() {
+//Score counter
+function scoreBoard() { 
   fill(255);
   textAlign(CENTER);
   textSize(20);
   text("Score: " + score, width/2, 40)
   
   // What should the player see when the game ends?
-  // How do they restart?
   if (gameState === "gameOver") {
     fill(0,0,0,180);
     rect(0,0,width, height);
@@ -131,6 +133,7 @@ function scoreBoard() {
     fill(255);
     text("GAME OVER", width/2, height/3); //gameover text
     
+    // How do they restart?
     textSize(20);
     text("Press ENTER to play again", width/2, height/2+200); //play again text
     text("Score: " + score, width/2, 40);
@@ -159,11 +162,12 @@ function bgScroll () {
 
 /* ----------------- Input ----------------- */
 function keyPressed() {
-  // Make the bird flap on space or UP_ARROW — call bird.flap()
+  // Make the bird flap on space — call bird.flap()
   if (gameState === "playing" && key === " "){ // spacebar to flap
     bird.flap();
   } 
   
+  // gameover -> playing
   if (gameState === "gameOver" && key == ENTER){ //press ENTER to play again
     gameState = "playing";
     
@@ -175,6 +179,7 @@ function keyPressed() {
     
     loop();
   }
+  // Start -> playing
   if (gameState === "homePage" && (key === "p" || key === "P")){ //press P to start playing
     gameState = "playing"
   }
